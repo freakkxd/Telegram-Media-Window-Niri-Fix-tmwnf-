@@ -7,9 +7,13 @@ the way it does on Windows: a normal floating window above everything else
 that you drag around with the mouse (to any monitor), while you keep typing in
 the chat. It reopens on the same monitor, at the same spot and size.
 
-| Before | After |
-| --- | --- |
-| ![Before: fullscreen viewer, close button only, can't be dragged, steals focus](docs/images/before.svg) | ![After: floating viewer on a second monitor, dragged with the mouse, chat stays usable](docs/images/after.svg) |
+### Before
+
+<img src="docs/images/before.svg" width="100%" alt="Before: fullscreen viewer, close button only, can't be dragged, steals focus">
+
+### After
+
+<img src="docs/images/after.svg" width="100%" alt="After: floating viewer on a second monitor, dragged with the mouse, chat stays usable">
 
 ## What was wrong
 
@@ -69,7 +73,7 @@ The installer:
 
 ### One-time step: switch the viewer to windowed mode
 
-![Click the middle button in the viewer's top right corner](docs/images/windowed-mode.svg)
+<img src="docs/images/windowed-mode.svg" width="100%" alt="Click the middle button in the top right corner of the viewer">
 
 1. Open any photo in Telegram and move the mouse: the window buttons appear in
    the top right corner. Click the middle (maximize/restore) one.
