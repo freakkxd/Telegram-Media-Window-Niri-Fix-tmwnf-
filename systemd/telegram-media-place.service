@@ -1,0 +1,13 @@
+[Unit]
+Description=Reopen the Telegram media viewer where it was closed (niri)
+After=niri.service
+PartOf=niri.service
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/telegram-media-place
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

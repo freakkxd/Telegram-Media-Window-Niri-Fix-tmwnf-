@@ -1,0 +1,157 @@
+#!/usr/bin/env python3
+"""
+telegram-media-place — reopen the Telegram Desktop media viewer exactly where
+you closed it (niri).
+
+Telegram creates a brand new window for the media viewer every time you open
+a photo or video, and a Wayland client cannot pick its own monitor or
+position. So when the viewer closes, this daemon writes its monitor, position
+and size into a niri window rule (~/.config/niri/telegram-media.kdl, included
+from config.kdl):
+
+    open-on-output + default-floating-position + fixed size
+
+niri reloads the file by itself, so the next viewer window opens in place
+right away: nothing is moved after it appears, the cursor never jumps, and
+nobody fights Telegram. One persistent IPC socket (event stream), no
+subprocesses, no polling.
+
+Environment:
+    TG_MEDIA_TITLE_RE  regex for the viewer title in your Telegram language
+                       (default: "^(Media viewer|Просмотр медиа)$")
+    TG_MEDIA_RULE_FILE where to write the rule
+                       (default: ~/.config/niri/telegram-media.kdl)
+
+    systemctl --user status|restart telegram-media-place
+    journalctl --user -u telegram-media-place -f
+"""
+
+from __future__ import annotations
+
+import glob
+import json
+import os
+import pathlib
+import re
+import socket
+import sys
+import time
+
+APP_ID = "org.telegram.desktop"
+TITLE_RE = os.environ.get("TG_MEDIA_TITLE_RE") or "^(Media viewer|Просмотр медиа)$"
+
+RULE_FILE = pathlib.Path(os.environ.get("TG_MEDIA_RULE_FILE") or pathlib.Path(
+    os.environ.get("XDG_CONFIG_HOME") or pathlib.Path.home() / ".config")
+    / "niri" / "telegram-media.kdl").expanduser()
+
+RULE = """\
+// Written by telegram-media-place when the Telegram media viewer closes:
+// the next viewer window opens on the same monitor, spot and size.
+window-rule {{
+    match app-id=r#"^org\\.telegram\\.desktop$"# title=r#"{title_re}"#
+    open-on-output "{output}"
+    default-floating-position x={x} y={y}
+    default-column-width {{ fixed {w}; }}
+    default-window-height {{ fixed {h}; }}
+}}
+"""
+
+_title = re.compile(TITLE_RE)
+
+
+def log(*parts: object) -> None:
+    print(" ".join(str(p) for p in parts), flush=True)
+
+
+def niri_socket() -> str:
+    env = os.environ.get("NIRI_SOCKET")
+    if env and os.path.exists(env):
+        return env
+    # systemd user services do not always inherit the niri session env
+    socks = sorted(glob.glob(f"/run/user/{os.getuid()}/niri.*.sock"),
+                   key=os.path.getmtime, reverse=True)
+    if not socks:
+        raise ConnectionError("niri socket not found")
+    return socks[0]
+
+
+def is_media(win: dict) -> bool:
+    return win.get("app_id") == APP_ID and bool(_title.search(win.get("title") or ""))
+
+
+def write_rule(text: str) -> bool:
+    """Write the rule only if it changed (otherwise niri reloads for nothing)."""
+    try:
+        if RULE_FILE.read_text() == text:
+            return False
+    except OSError:
+        pass
+    tmp = RULE_FILE.with_suffix(".kdl.tmp")
+    tmp.write_text(text)
+    tmp.replace(RULE_FILE)
+    return True
+
+
+def run() -> None:
+    ws_output: dict[int, str] = {}          # workspace id -> output name
+    windows: dict[int, dict] = {}           # open viewer windows: id -> window
+
+    with socket.socket(socket.AF_UNIX) as s:
+        s.connect(niri_socket())
+        s.sendall(b'"EventStream"\n')
+        stream = s.makefile(encoding="utf-8")
+        stream.readline()                   # {"Ok":"Handled"}
+        log("connected to niri, watching titles", repr(TITLE_RE))
+        for line in stream:
+            (kind, ev), = json.loads(line).items()
+
+            if kind == "WorkspacesChanged":
+                ws_output = {w["id"]: w["output"] for w in ev["workspaces"]}
+
+            elif kind == "WindowsChanged":
+                windows = {w["id"]: w for w in ev["windows"] if is_media(w)}
+
+            elif kind == "WindowOpenedOrChanged":
+                win = ev["window"]
+                if is_media(win):
+                    windows[win["id"]] = win
+                else:
+                    windows.pop(win["id"], None)
+
+            elif kind == "WindowLayoutsChanged":
+                for wid, layout in ev["changes"]:
+                    if wid in windows:
+                        windows[wid]["layout"] = layout
+
+            elif kind == "WindowClosed":
+                win = windows.pop(ev["id"], None)
+                if not win:
+                    continue
+                layout = win.get("layout") or {}
+                pos = layout.get("tile_pos_in_workspace_view")
+                size = layout.get("window_size")
+                output = ws_output.get(win.get("workspace_id"))
+                if not (pos and size and output):
+                    continue                # it was tiled — nothing to remember
+                text = RULE.format(title_re=TITLE_RE, output=output,
+                                   x=round(pos[0]), y=round(pos[1]),
+                                   w=size[0], h=size[1])
+                if write_rule(text):
+                    log(f"window {ev['id']} closed on {output} "
+                        f"({pos[0]:.0f}, {pos[1]:.0f}) {size[0]}x{size[1]}, saved")
+
+
+def main() -> None:
+    while True:
+        try:
+            run()
+        except (OSError, ValueError) as exc:
+            log("lost connection to niri:", repr(exc))
+        time.sleep(2)                       # niri is restarting — wait
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(0)

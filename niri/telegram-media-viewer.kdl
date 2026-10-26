@@ -1,0 +1,17 @@
+// >>> telegram-media-window-niri-fix >>>
+// Telegram media viewer: a floating window on top of tiled ones.
+// Switch the viewer to Telegram's windowed mode once (see README): then the
+// dark area around the photo works as a title bar — hold the left mouse button
+// and drag it anywhere, including to another monitor.
+window-rule {
+    match app-id=r#"^org\.telegram\.desktop$"# title=r#"__TITLE_RE__"#
+    open-floating true
+    open-fullscreen false
+    open-maximized false
+    open-maximized-to-edges false
+}
+
+// Monitor, position and size of the last closed viewer.
+// Rewritten by ~/.local/bin/telegram-media-place (systemd --user).
+include "./telegram-media.kdl"
+// <<< telegram-media-window-niri-fix <<<

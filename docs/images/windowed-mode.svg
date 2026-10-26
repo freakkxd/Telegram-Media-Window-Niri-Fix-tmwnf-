@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" font-family="Inter, 'Segoe UI', 'Noto Sans', sans-serif">
+  <rect width="960" height="300" rx="18" fill="#101116"/>
+  <text x="30" y="44" fill="#b9bdc9" font-size="15">One-time step: switch the viewer to Telegram's windowed mode</text>
+
+  <!-- left: only close -->
+  <rect x="30" y="70" width="420" height="150" rx="10" fill="#000"/>
+  <text x="420" y="104" fill="#e6e6e6" font-size="22" text-anchor="middle">×</text>
+  <text x="50" y="170" fill="#ff9a9a" font-size="15">Only × here?</text>
+  <text x="50" y="194" fill="#8a8f9c" font-size="13">Run scripts/show-maximize-button.sh</text>
+
+  <path d="M470 145 h40 m0 0 l-8 -6 m8 6 l-8 6" stroke="#8a8f9c" stroke-width="2" fill="none"/>
+
+  <!-- right: three buttons -->
+  <rect x="530" y="70" width="400" height="150" rx="10" fill="#000"/>
+  <g fill="#e6e6e6" font-size="20" text-anchor="middle">
+    <text x="826" y="104">–</text>
+    <rect x="857" y="89" width="12" height="12" fill="none" stroke="#e6e6e6" stroke-width="1.6"/>
+    <text x="902" y="105">×</text>
+  </g>
+  <circle cx="863" cy="95" r="18" fill="none" stroke="#46c37b" stroke-width="2.5"/>
+  <path d="M868 104 l0 22 l6 -6 l5 11 l4 -2 l-5 -11 l8 0 Z" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="550" y="170" fill="#6fe0a0" font-size="15">Click the middle button.</text>
+  <text x="550" y="194" fill="#8a8f9c" font-size="13">Went fullscreen? Click it once more.</text>
+  <text x="550" y="212" fill="#8a8f9c" font-size="13">Telegram remembers the choice.</text>
+
+  <text x="30" y="262" fill="#8a8f9c" font-size="13">In windowed mode the dark area around the photo becomes the title bar, and Telegram stops pulling focus</text>
+  <text x="30" y="282" fill="#8a8f9c" font-size="13">back to the viewer when you click the chat.</text>
+</svg>

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 660" font-family="Inter, 'Segoe UI', 'Noto Sans', sans-serif">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b5b8c"/>
+      <stop offset="1" stop-color="#e9a46b"/>
+    </linearGradient>
+    <clipPath id="photo"><rect x="330" y="150" width="300" height="250" rx="2"/></clipPath>
+  </defs>
+
+  <rect width="960" height="660" rx="18" fill="#101116"/>
+  <rect x="30" y="22" width="92" height="30" rx="15" fill="#3a1518"/>
+  <text x="76" y="42" fill="#ff7a7a" font-size="15" font-weight="700" text-anchor="middle">BEFORE</text>
+  <text x="140" y="42" fill="#b9bdc9" font-size="15">Telegram media viewer on niri, out of the box</text>
+
+  <!-- monitor -->
+  <rect x="60" y="70" width="840" height="400" rx="14" fill="#1c1e26" stroke="#2e313d" stroke-width="2"/>
+  <rect x="76" y="86" width="808" height="368" rx="4" fill="#14161c"/>
+  <rect x="440" y="470" width="80" height="22" fill="#1c1e26"/>
+  <rect x="400" y="490" width="160" height="10" rx="5" fill="#2e313d"/>
+
+  <!-- tiled telegram window underneath -->
+  <rect x="90" y="100" width="780" height="340" rx="8" fill="#17212b"/>
+  <rect x="90" y="100" width="230" height="340" rx="8" fill="#1d2833"/>
+  <g fill="#2b3a49">
+    <circle cx="120" cy="135" r="14"/><rect x="144" y="126" width="140" height="8" rx="4"/><rect x="144" y="140" width="100" height="7" rx="3.5"/>
+    <circle cx="120" cy="180" r="14"/><rect x="144" y="171" width="120" height="8" rx="4"/><rect x="144" y="185" width="150" height="7" rx="3.5"/>
+    <circle cx="120" cy="225" r="14"/><rect x="144" y="216" width="150" height="8" rx="4"/><rect x="144" y="230" width="90" height="7" rx="3.5"/>
+  </g>
+
+  <!-- fullscreen viewer covering everything -->
+  <rect x="76" y="86" width="808" height="368" rx="4" fill="#000" opacity="0.86"/>
+  <g clip-path="url(#photo)">
+    <rect x="330" y="150" width="300" height="250" fill="url(#sky)"/>
+    <circle cx="560" cy="250" r="26" fill="#ffd89a"/>
+    <path d="M330 400 L410 290 L460 340 L530 260 L630 380 L630 400 Z" fill="#2c3e57"/>
+    <path d="M330 400 L380 350 L430 380 L500 330 L570 380 L630 360 L630 400 Z" fill="#1d2a3c"/>
+  </g>
+  <text x="860" y="112" fill="#e6e6e6" font-size="22" text-anchor="middle">×</text>
+
+  <!-- callouts -->
+  <g font-size="13" font-weight="700" text-anchor="middle" fill="#fff">
+    <circle cx="828" cy="106" r="13" fill="#e5484d"/><text x="828" y="111">1</text>
+    <circle cx="200" cy="300" r="13" fill="#e5484d"/><text x="200" y="305">2</text>
+    <circle cx="100" cy="414" r="13" fill="#e5484d"/><text x="100" y="419">3</text>
+    <circle cx="655" cy="140" r="13" fill="#e5484d"/><text x="655" y="145">4</text>
+  </g>
+  <path d="M175 300 h-30 m0 0 l8 -6 m-8 6 l8 6 M225 300 h30 m0 0 l-8 -6 m8 6 l-8 6" stroke="#e5484d" stroke-width="2" fill="none"/>
+  <text x="200" y="335" fill="#ff9a9a" font-size="13" text-anchor="middle">won't move</text>
+
+  <!-- 3: click the chat input, focus is pulled back to the viewer -->
+  <rect x="122" y="402" width="170" height="26" rx="7" fill="#22303d" opacity="0.55"/>
+  <path d="M200 408 l0 18 l5 -5 l4 9 l3 -1.5 l-4 -9 l7 0 Z" fill="#fff" stroke="#000" stroke-width="1"/>
+  <path d="M230 402 C 260 360, 290 340, 322 330" stroke="#e5484d" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+  <path d="M322 330 l-10 -2 m10 2 l-6 8" stroke="#e5484d" stroke-width="2" fill="none"/>
+  <text x="248" y="448" fill="#ff9a9a" font-size="13" text-anchor="middle">focus jumps back</text>
+
+  <!-- 4: flicker marks around the photo -->
+  <g stroke="#e5484d" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M318 140 l-8 -8 M322 128 l-3 -12 M306 152 l-12 -3"/>
+    <path d="M642 410 l8 8 M638 422 l3 12 M654 398 l12 3"/>
+  </g>
+
+  <!-- legend -->
+  <g font-size="15" fill="#d7dae3">
+    <circle cx="80" cy="530" r="11" fill="#e5484d"/><text x="80" y="535" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">1</text>
+    <text x="102" y="535">Only a close button: no way to leave the fullscreen viewer.</text>
+    <circle cx="80" cy="560" r="11" fill="#e5484d"/><text x="80" y="565" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">2</text>
+    <text x="102" y="565">No title bar to grab: the window can't be dragged to another monitor.</text>
+    <circle cx="80" cy="590" r="11" fill="#e5484d"/><text x="80" y="595" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">3</text>
+    <text x="102" y="595">Click the chat to type and focus jumps right back to the photo.</text>
+    <circle cx="80" cy="620" r="11" fill="#e5484d"/><text x="80" y="625" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">4</text>
+    <text x="102" y="625">Telegram keeps asking for fullscreen; scripts that fight it make the window flicker and lag.</text>
+  </g>
+</svg>
